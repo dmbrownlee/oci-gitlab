@@ -1,0 +1,32 @@
+---
+services:
+  gitlab:
+    hostname: gitlab
+    domainname: ${LOCAL_DOMAIN}
+    container_name: gitlab
+    image: 'gitlab/gitlab-ce:latest'
+    restart: unless-stopped
+    environment:
+      GITLAB_ROOT_EMAIL: "${GITLAB_USER}@${LOCAL_DOMAIN}"
+      GITLAB_ROOT_PASSWORD: "${GITLAB_PASSWORD}"
+    volumes:
+      - config:/etc/gitlab
+      - data:/var/opt/gitlab
+      - log:/var/log/gitlab
+    dns:
+      - ${NS1_IP}
+      - ${NS2_IP}
+    dns_search: ${LOCAL_DOMAIN}
+    networks:
+      net1:
+        ipv4_address: ${THIS_IP}
+
+volumes:
+  config:
+  data:
+  log:
+
+networks:
+  net1:
+    external: true
+    name: ${LAN_NAME}
